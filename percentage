@@ -1,0 +1,81 @@
+
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+public class TipCalculator extends Application {
+
+    @Override
+    public void start(Stage stage) {
+
+        Label title = new Label("Tip Calculator");
+
+        Label billLabel = new Label("Enter Bill Amount:");
+        TextField billField = new TextField();
+        billField.setPromptText("Enter amount");
+
+        Label tipLabel = new Label("Select Tip Percentage:");
+
+        ComboBox<Integer> tipBox = new ComboBox<>();
+        tipBox.getItems().addAll(5, 10, 15, 20);
+        tipBox.setValue(10);
+
+        Button calculateButton = new Button("Calculate Tip");
+
+        Label tipResult = new Label("Tip Amount: ₹0.00");
+        Label totalResult = new Label("Total Bill: ₹0.00");
+
+        calculateButton.setOnAction(e -> {
+            try {
+                double bill = Double.parseDouble(
+                    billField.getText()
+                );
+
+                int percentage = tipBox.getValue();
+
+                if (bill < 0) {
+                    tipResult.setText("Enter a valid amount.");
+                    totalResult.setText("");
+                    return;
+                }
+
+                double tip = bill * percentage / 100;
+                double total = bill + tip;
+
+                tipResult.setText(
+                    String.format("Tip Amount: ₹%.2f", tip)
+                );
+
+                totalResult.setText(
+                    String.format("Total Bill: ₹%.2f", total)
+                );
+
+            } catch (NumberFormatException ex) {
+                tipResult.setText("Please enter a valid amount.");
+                totalResult.setText("");
+            }
+        });
+
+        VBox root = new VBox(10);
+        root.setPadding(new Insets(20));
+
+        root.getChildren().addAll(
+            title, billLabel, billField,
+            tipLabel, tipBox, calculateButton,
+            tipResult, totalResult
+        );
+
+        Scene scene = new Scene(root, 350, 350);
+
+        stage.setTitle("Tip Calculator App");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
